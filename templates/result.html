@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% set active_page = "result" %}
+{% block title %}Generate{% endblock title %}
+{% block head %}
+  {{ super() }}
+  <script type="text/javascript" src="/js/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="/js/result.js"></script>
+{% endblock head %}
+{% block teleport_links %}
+ {{ super() }}
+  <a class="maia-teleport" href="#password_result">Skip to password result</a>
+{% endblock teleport_links %}
+{% block body %}
+  {{ super () }}
+  <div id="maia-main" role="main">
+  <div id="content" class="maia-teleport"></div>
+    <h1 class="maia-super">Congratulations, {{ user_fullname }}</h1>
+    <div class="maia-cols">
+      <div class="maia-col-12">
+        <h2>Your password has been created successfully!</h2>
+        <p>{{ password_created_message }}</p>
+        <div class="maia-col-7">
+          <div id="password_notification" class="maia-notification">
+            <div id="password_result" class="maia-teleport"></div>
+            <!-- Keep the password variable together with the div tag on
+                 one line without whitespaces.  i.e. do not indent the password
+                 variable onto the next line or else the whitespaces will
+                 cause extra asterisks to be rendered. -->
+            <div id="password" style="text-align:center;font-weight:bold;font-size:200%;" >{{ password }}</div>
+            <button id="reveal_password_button" class="maia-button"
+                style="visibility:hidden;text-align:center;" tabindex="1"
+                onclick="PWG_RevealPassword('{{ password }}')">
+              Reveal Password
+            </button>
+            {% if enable_ios_profile_download == 'on' and is_ios_device and is_safari_browser %}
+              <div class="maia-note">
+                <a href="{{ download_url_for_ios_profile }}">Download iOS Configuration
+                Profile</a> in the safari browser of your iOS device to automatically
+                configure your iOS device for use with Google Apps Sync Protocol.
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="maia-col-7">
+          <button id="done_button" class="maia-button"
+              style="visibility:visible;text-align:center;" tabindex="2"
+              onclick="PWG_ExpirePassword()">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock body %}

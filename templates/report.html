@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% set active_page = "report" %}
+{% block title %}Reporting{% endblock title %}
+{% block head %}
+  {{ super() }}
+{% endblock head %}
+{% block teleport_links %}
+ {{ super() }}
+    <a class="maia-teleport"
+      href="#report_start_date">Skip to define the report start date</a>
+    <a class="maia-teleport"
+      href="#report_end_date">Skip to define report end date</a>
+    <a class="maia-teleport"
+      href="#report_user_email">Skip to define user email address</a>
+    <a class="maia-teleport" href="#generate">Skip to generate report</a>
+{% endblock teleport_links %}
+{% block body %}
+  {{ super() }}
+  <div id="maia-main" role="main">
+    <div id="content" class="maia-teleport"></div>
+      <div class="maia-cols">
+        <div class="maia-col-12">
+          <div class="maia-promo">
+            <form id=reporting action="/reporting" method="post">
+              <fieldset>
+                <h1>Password Generator Reports</h1>
+                <p>
+                  Search for password generations, by date only, by user only,
+                  or by date and user.
+                </p><br>
+                <ul>
+                  <li {% if reporting_form.start_date.errors %}
+                        class="maia-form-error" role="alert"
+                     {% endif %}>
+                    <div id="report_start_date" class="maia-teleport"></div>
+                    <label for="{{ reporting_form.start_date.id }}">
+                      Report Start Date
+                    </label>
+                    <p class="maia-note">
+                      Start date range of the report in the format of
+                      YYYY-MM-DD.
+                    </p>
+                    <input
+                      type="date"
+                      tabindex="1"
+                      name="{{ reporting_form.start_date.id }}">
+                    {% if reporting_form.start_date.errors %}
+                      <div class="maia-form-error" role="alert">
+                        {% for error in reporting_form.start_date.errors %}
+                          <p class="maia-form-error-msg">{{ error }}</p>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </li>
+                  <li {% if reporting_form.end_date.errors %}
+                        class="maia-form-error" role="alert"
+                      {% endif %}>
+                    <div id="report_end_date" class="maia-teleport"></div>
+                    <label for="{{ reporting_form.end_date.id }}">
+                      Report End Date
+                    </label>
+                    <p class="maia-note">
+                      End date range of the report in the format of YYYY-MM-DD.
+                    </p>
+                    <input
+                      type="date"
+                      tabindex="2"
+                      name="{{ reporting_form.end_date.id }}">
+                    {% if reporting_form.end_date.errors %}
+                      <div class="maia-form-error" role="alert">
+                        {% for error in reporting_form.end_date.errors %}
+                          <p class="maia-form-error-msg">{{ error }}</p>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </li>
+                  <li {% if reporting_form.user_email.errors %}
+                        class="maia-form-error" role="alert"
+                      {% endif %}>
+                    <div id="report_user_email" class="maia-teleport"></div>
+                    <label for="{{ reporting_form.user_email.id }}">
+                      Filter by Email address
+                    </label>
+                    <p class="maia-note">
+                      Enter an e-mail address to filter the report on a single
+                      user email address.
+                    </p>
+                    <input
+                      type="text"
+                      tabindex="3"
+                      name="{{ reporting_form.user_email.id }}">
+                    {% if reporting_form.user_email.errors %}
+                      <div class="maia-form-error" role="alert">
+                       {% for error in reporting_form.user_email.errors %}
+                         <p class="maia-form-error-msg">{{ error }}</p>
+                       {% endfor %}
+                      </div>
+                    {% endif %}
+                  </li>
+                </ul>
+              </fieldset>
+              <input type="hidden" name="xsrf_token" value="{{ xsrf_token }}">
+              <div id="generate" class="maia-teleport"></div>
+              <div>
+                <input type="submit" class="maia-button" value="Generate" tabindex="4">
+              </div>
+            </form>
+          </div>
+          {% if password_generations %}
+            <h2>Password generation history</h2>
+            <div class="maia-note">
+              <p>
+                <a href="{{ download_report_url }}">
+                  Download detailed report
+                </a>
+              </p>
+            </div>
+            <table>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Email</th>
+                <th scope="col">Reason</th>
+                <th scope="col">User-Agent</th>
+                <th scope="col">IP Address</th>
+                <th scope="col">Password Length</th>
+              </tr>
+              {% for password_generation in password_generations %}
+                <tr>
+                  <td>
+                    {% if password_generation.date %}
+                      {{ password_generation.date.strftime('%m/%d/%Y %H:%M') }}
+                    {% else %}
+                      Unrecorded
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if password_generation.user.email() %}
+                      {{ password_generation.user.email() }}
+                    {% else %}
+                      Unrecorded
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if password_generation.reason %}
+                      {{ password_generation.reason|truncate(30, True) }}
+                    {% else %}
+                      Unrecorded
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if password_generation.user_agent %}
+                      {{ password_generation.user_agent|truncate(30, True) }}
+                    {% else %}
+                      Unrecorded
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if password_generation.user_ip_address %}
+                      {{ password_generation.user_ip_address }}
+                    {% else %}
+                      Unrecorded
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if password_generation.password_length %}
+                      {{ password_generation.password_length }}
+                    {% else %}
+                      Unrecorded
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </table>
+          {% elif display_result_message %}
+            <p>No results found.  Please try again.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="//www.google.com/js/maia.js"></script>
+{% endblock body %}

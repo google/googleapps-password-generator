@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>PayloadContent</key>
+    <array>
+      <dict>
+        <key>Host</key>
+        <string>m.google.com</string>
+        <key>MailNumberOfPastDaysToSync</key>
+        <integer>0</integer>
+        <key>Password</key>
+        <string>password</string>
+        <key>PayloadDescription</key>
+        <string>Configures device for use with Google Apps Sync Protocol.</string>
+        <key>PayloadDisplayName</key>
+        <string>Google Apps ActiveSync</string>
+        <key>PayloadIdentifier</key>
+        <string>uniqueID.</string>
+        <key>PayloadOrganization</key>
+        <string></string>
+        <key>PayloadType</key>
+        <string>com.apple.eas.account</string>
+        <key>PayloadUUID</key>
+        <string>D6A65B3A-B9FB-4B3B-8C1F-4B8A877F2A59</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+        <key>PreventAppSheet</key>
+        <false/>
+        <key>PreventMove</key>
+        <true/>
+        <key>SMIMEEnabled</key>
+        <false/>
+        <key>SSL</key>
+        <true/>
+        <key>UserName</key>
+        <string>user@domain.com</string>
+        <key>EmailAddress</key>
+        <string>user@domain.com</string>
+      </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>Configures device for use with Google Apps Sync Protocol.</string>
+    <key>PayloadDisplayName</key>
+    <string>Google Apps ActiveSync</string>
+    <key>PayloadIdentifier</key>
+    <string>uniqueID</string>
+    <key>PayloadOrganization</key>
+    <string></string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>8EBAB0FF-73A6-4A0D-91D8-FB01AC27CCD8</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+  </dict>
+</plist>

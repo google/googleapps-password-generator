@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% set active_page = "thank_you" %}
+{% block title %}Thank You{% endblock title %}
+{% block body %}
+  {{ super () }}
+  <div id="maia-main" role="main">
+    <h1 class="maia-super">Thank you for using the password generator.</h1>
+    <div class="maia-cols">
+      <div class="maia-col-12">
+        <p>{{ thank_you_message }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock body %}

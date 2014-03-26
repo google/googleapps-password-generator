@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% set active_page = "error" %}
+{% block title %}Error{% endblock title %}
+{% block body %}
+  {{ super () }}
+  <div id="maia-main" role="main">
+  <div id="content" class="maia-teleport"></div>
+    <h1 class="maia-super">Error!</h1>
+    <h2>{{ error_message }}</h2>
+    <div class="maia-cols">
+      <div class="maia-col-12">
+        <p>{{ exception_message }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock body %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% set active_page = "request" %}
+{% block title %}Generate{% endblock title %}
+{% block head %}
+  {{ super() }}
+{% endblock head %}
+{% block teleport_links %}
+ {{ super() }}
+  <a class="maia-teleport"
+    href="#password_reason">Skip to set password reason</a>
+{% endblock teleport_links %}
+{% block body %}
+  {{ super () }}
+  <div id="maia-main" role="main">
+  <div id="content" class="maia-teleport"></div>
+    <h1 class="maia-super">Greetings, {{ user_fullname }}</h1>
+    <div class="maia-cols">
+      <div class="maia-col-12">
+        <form id="password_generation" action="/result" method="post">
+          <fieldset>
+            <h1>Create a Google Password</h1>
+            <p>{{ create_new_password_message }}</p>
+            <div class="maia-col-7 maia-notification">
+              <div id="password_reason" class="maia-teleport"></div>
+                <ul {% if password_generation_form
+                    and password_generation_form.reason.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                  <p>
+                    <strong>
+                      Provide a description for why you are generating a
+                      password
+                    </strong>
+                  </p>
+                  <p class="maia-note">e.g. Setting up new mobile device.</p>
+                  <input
+                    type="text"
+                    id="reason"
+                    name="reason"
+                    tabindex="1"
+                    autofocus>
+                  {% if password_generation_form and
+                  password_generation_form.reason.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      password_generation_form.reason.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p></br>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </ul>
+            </div>
+          </fieldset>
+          <input type="hidden" name="xsrf_token" value="{{ xsrf_token }}">
+          <input type="submit" class="maia-button" value="Submit" tabindex="2">
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock body %}

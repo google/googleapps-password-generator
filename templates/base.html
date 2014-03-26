@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+{% autoescape true %}
+  <html class="google" lang="en">
+    <head>
+      {% block head %}
+         <!-- Begin Maia requirements. -->
+        <meta charset="utf-8">
+        <meta content="initial-scale=1, minimum-scale=1, width=device-width" name="viewport">
+        <title>Password Generator - {% block title %}{% endblock title %}</title>
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en"
+          rel="stylesheet">
+        <link rel="stylesheet" href="//www.google.com/css/maia.css">
+        <!-- End Maia requirements. -->
+        <link rel=icon href=images/fav.png sizes="32x32" type="image/png">
+      {% endblock head %}
+    </head>
+    <body>
+      {% block body %}
+        {% block header %}
+          <div class="maia-header" id="maia-header" role="banner">
+            <div class="maia-aux">
+              <h1>
+                <img alt="Password Generator" height="42" width="42" src="images/logo.png">
+                Password Generator
+              </h1>
+              {% block teleport_links %}
+                <a class="maia-teleport" href="#content">Skip to content</a>
+              {% endblock teleport_links %}
+            </div>
+          </div>
+          <div class="maia-nav" id="maia-nav-x" role="navigation">
+            <div class="maia-aux">
+              <ul>
+                <li{% if active_page == "request"%} class="active"{% endif %}>
+                  <a href="/request">Generate</a>
+                </li>
+                {% if is_admin %}
+                  <li{% if active_page == "admin" %} class="active"{% endif %}>
+                    <a href="/admin">Administration</a>
+                  </li>
+                  <li{% if active_page == "report" %} class="active"{% endif %}>
+                    <a href="/reporting">Reporting</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        {% endblock header %}
+      {% endblock body %}
+    </body>
+  </html>
+{% endautoescape %}

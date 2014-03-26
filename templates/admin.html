@@ -1,0 +1,479 @@
+{% extends "base.html" %}
+{% set active_page = "admin" %}
+{% block title %}Admininstration{% endblock title %}
+{% block head %}
+  {{ super() }}
+  <script src="/js/jquery-1.10.2.min.js"></script>
+  <script src="/js/admin.js"></script>
+  <!-- Begin Noty (notification) requirements -->
+  <script type="text/javascript" src="js/noty/jquery.noty.js"></script>
+  <script type="text/javascript" src="js/noty/layouts/topCenter.js"></script>
+  <script type="text/javascript" src="js/noty/themes/default.js"></script>
+  <!-- End Noty (notification) requirements -->
+{% endblock head %}
+{% block teleport_links %}
+ {{ super() }}
+   <a class="maia-teleport"
+      href="#password_settings">Skip to password settings</a>
+    <a class="maia-teleport"
+      href="#application_settings">Skip to application settings</a>
+    <a class="maia-teleport"
+      href="#messaging_settings">Skip to messaging settings</a>
+    <a class="maia-teleport" href="#save_all_settings">Skip to save settings</a>
+{% endblock teleport_links %}
+{% block body %}
+  {{ super() }}
+    <div id="maia-main" role="main">
+    <div id="content" class="maia-teleport"></div>
+      <div class="maia-cols maia-promo">
+        {% if update_is_successful is defined %}
+          {% if update_is_successful %}
+            <!-- Generate a succesful noty. -->
+            <script>
+              PWG_GenerateSuccessfulNoty()
+            </script>
+          {% else %}
+            <script>
+              PWG_GenerateUnsuccessfulNoty()
+            </script>
+          {% endif %}
+        {% endif %}
+        <form id=settings action="/admin" method="post">
+          <fieldset>
+            <ul>
+              <div class="maia-col-6">
+                <div id="password_settings" class="maia-teleport"></div>
+                <h1>Password settings</h1>
+                <li {% if settings_form.default_password_length.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                  <label for="{{ settings_form.default_password_length.id }}">
+                    Password Length
+                  </label>
+                  <input
+                    name="{{ settings_form.default_password_length.id }}"
+                    type="number"
+                    tabindex="1"
+                    {% if settings_form.default_password_length.data %}
+                      value="{{ settings_form.default_password_length.data }}"
+                    {% endif %}>
+                  {% if settings_form.default_password_length.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      settings_form.default_password_length.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+                <li {% if settings_form.use_digits_in_password.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                  <label>
+                    <input
+                      id="{{ settings_form.use_digits_in_password.id }}"
+                      name="{{ settings_form.use_digits_in_password.id }}"
+                      type="checkbox"
+                      tabindex="2"
+                      {% if settings_form.use_digits_in_password.data == 'on' %}
+                        checked
+                      {% endif %}>
+                    Allow Digits (0 - 9)
+                  </label>
+                  {% if settings_form.use_digits_in_password.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      settings_form.use_digits_in_password %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+                <li {% if settings_form.use_punctuation_in_password.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                  <label>
+                    <input
+                      id="{{ settings_form.use_punctuation_in_password.id }}"
+                      name="{{ settings_form.use_punctuation_in_password.id }}"
+                      type="checkbox"
+                      tabindex="3"
+                      {% if settings_form.use_punctuation_in_password.data == 'on' %}
+                        checked
+                      {% endif %}>
+                    Allow Special Characters
+                  </label>
+                  <p class="maia-note">
+                    {{ punctuation_char_set }}
+                  </p>
+                  {% if settings_form.use_punctuation_in_password.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      settings_form.use_punctuation_in_password.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+                <li {% if settings_form.use_uppercase_in_password.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                  <label>
+                    <input
+                      name="{{ settings_form.use_uppercase_in_password.id }}"
+                      type="checkbox"
+                      tabindex="4"
+                      {% if settings_form.use_uppercase_in_password.data == 'on'%}
+                        checked
+                      {% endif %}>
+                    Allow Uppercase (A - Z)
+                  </label>
+                  {% if settings_form.use_uppercase_in_password.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      settings_form.use_uppercase_in_password.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+                <li
+                  {% if settings_form.remove_ambiguous_characters_in_password.errors %}
+                    class="maia-form-error" role="alert"
+                  {% endif %}>
+                  <label>
+                    <input
+                      name="{{ settings_form.remove_ambiguous_characters_in_password.id }}"
+                      type="checkbox"
+                      tabindex="5"
+                      {% if settings_form.remove_ambiguous_characters_in_password.data == 'on' %}
+                        checked
+                      {% endif %}>
+                    Remove Ambiguous Characters
+                  </label>
+                  <p class="maia-note">
+                     {{ visually_ambiguous_char_set }}
+                  </p>
+                  {% if settings_form.remove_ambiguous_characters_in_password.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      settings_form.remove_ambiguous_characters_in_password.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+              </div>
+              <div class="maia-col-6">
+                <div id="application_settings" class="maia-teleport"></div>
+                <h1>Application settings</h1>
+                <li {% if  settings_form.service_account.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                  <label for="{{ settings_form.service_account.id }}">
+                    Service Account E-Mail Address
+                  </label>
+                  <p class="maia-note">
+                     E-Mail address for the service account created from the
+                     Google Cloud Console.
+                  </p>
+                  <input
+                    id="{{ settings_form.service_account.id }}"
+                    name="{{ settings_form.service_account.id }}"
+                    tabindex="6"
+                    type="text"
+                    value="{{ settings_form.service_account.data }}">
+                  {% if settings_form.service_account.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in settings_form.service_account.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+                <li
+                  {% if settings_form.private_key_filename.errors %}
+                    class="maia-form-error" role="alert"
+                  {% endif %}>
+                  <label
+                    for="{{ settings_form.private_key_filename.id }}">
+                    Private Key Filename
+                  </label>
+                  <p class="maia-note">
+                    Certificate generated for service account from the Google
+                    Cloud Console.
+                  </p>
+                  <input
+                    id="{{ settings_form.private_key_filename.id }}"
+                    name="{{ settings_form.private_key_filename.id }}"
+                    tabindex="7"
+                    type="text"
+                    value="{{ settings_form.private_key_filename.data }}">
+                  {% if settings_form.private_key_filename.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      settings_form.private_key_filename.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+                <li {% if settings_form.domain_admin_account.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                  <label for="{{ settings_form.domain_admin_account.id }}">
+                    Domain Admin Account
+                  </label>
+                  <p class="maia-note">
+                    E-Mail address of domain admin account the Password Tool
+                    acts on behalf of for all operations.
+                  </p>
+                  <input
+                    id="{{ settings_form.domain_admin_account.id }}"
+                    name="{{ settings_form.domain_admin_account.id }}"
+                    tabindex="8"
+                    type="text"
+                    value="{{ settings_form.domain_admin_account.data }}">
+                  {% if settings_form.domain_admin_account.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      settings_form.domain_admin_account.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+                <li {% if settings_form.group_with_access_permission.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                  <label
+                    for="{{ settings_form.group_with_access_permission.id }}">
+                    Google Group Name
+                  </label>
+                  <p class="maia-note">
+                    Google group users must be a member of to gain access to
+                    the Password Tool.
+                  </p>
+                  <input
+                    id="{{ settings_form.group_with_access_permission.id }}"
+                    name="{{ settings_form.group_with_access_permission.id }}"
+                    tabindex="9"
+                    type="text"
+                    value=
+                      "{{ settings_form.group_with_access_permission.data }}">
+                  {% if settings_form.group_with_access_permission.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      settings_form.group_with_access_permission.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="{{ settings_form.enable_ios_profile_download.id }}"
+                      type="checkbox"
+                      tabindex="10"
+                      {% if settings_form.enable_ios_profile_download.data == 'on' %}
+                        checked
+                      {% endif %}>
+                    Enable iOS Profile Download
+                  </label>
+                </li>
+                <li {% if settings_form.ios_profile_template_filename.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                  <label
+                    for="{{ settings_form.ios_profile_template_filename.id }}">
+                    iOS Profile Template Filename
+                  </label>
+                  <p class="maia-note">
+                    iOS profile template users can install which
+                    autoconfigures iOS devices.
+                  </p>
+                  <input
+                    id="{{ settings_form.ios_profile_template_filename.id }}"
+                    name="{{ settings_form.ios_profile_template_filename.id }}"
+                    tabindex="11"
+                    type="text"
+                    value=
+                      "{{ settings_form.ios_profile_template_filename.data }}">
+                  {% if settings_form.ios_profile_template_filename.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      settings_form.ios_profile_template_filename.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+                <li {% if settings_form.email_subject_for_ios_profile_download_notification.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                  <label
+                    for="{{ settings_form.email_subject_for_ios_profile_download_notification.id }}">
+                    Email Subject for iOS Profile Download Notification
+                  </label>
+                  <p class="maia-note">
+                    The email subject for notifying users that iOS profile can be downloaded.
+                  </p>
+                  <input
+                    id="{{ settings_form.email_subject_for_ios_profile_download_notification.id }}"
+                    name="{{ settings_form.email_subject_for_ios_profile_download_notification.id }}"
+                    tabindex="12"
+                    type="text"
+                    value=
+                      "{{ settings_form.email_subject_for_ios_profile_download_notification.data }}">
+                  {% if settings_form.email_subject_for_ios_profile_download_notification.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in
+                      settings_form.email_subject_for_ios_profile_download_notification.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+                <li
+                  {% if settings_form.email_body_for_ios_profile_download_notification.errors %}
+                    class="maia-form-error" role="alert"
+                  {% endif %}>
+                  <label
+                    for="{{ settings_form.email_body_for_ios_profile_download_notification.id }}">
+                    Email Body for iOS Profile Download Notification
+                  </label>
+                  <p class="maia-note">
+                    The email body for notifying users that iOS profile can be downloaded.  Do not use html tags because the message will be text-based.
+                  </p>
+                  <textarea
+                    name="{{ settings_form.email_body_for_ios_profile_download_notification.id }}"
+                    tabindex="13"
+                    >{{ settings_form.email_body_for_ios_profile_download_notification.data }}</textarea>
+                  {% if settings_form.email_body_for_ios_profile_download_notification.errors %}
+                    <div class="maia-form-error" role="alert">
+                      {% for error in settings_form.email_body_for_ios_profile_download_notification.errors %}
+                        <p class="maia-form-error-msg">{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </li>
+              </div>
+              <div class="maia-col-12">
+                <div id="messaging_settings" class="maia-teleport"></div>
+                <h1>Messaging settings</h1>
+                <p>
+                  Messages can only be plain-text. Html-formatted
+                  tags are not accepted.
+                </p>
+                <br>
+                <div class="maia-col-6">
+                  <li
+                    {% if settings_form.create_new_password_message.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                    <label
+                      for="{{ settings_form.create_new_password_message.id }}">
+                      Generate New Password Message
+                    </label>
+                    <p class="maia-note">
+                      Message text on the request page to generate a new
+                      password.
+                    </p>
+                    <textarea
+                      name="{{ settings_form.create_new_password_message.id }}"
+                      tabindex="14"
+                      >{{ settings_form.create_new_password_message.data }}</textarea>
+                    {% if settings_form.create_new_password_message.errors %}
+                      <div class="maia-form-error" role="alert">
+                        {% for error in
+                        settings_form.create_new_password_message.errors %}
+                          <p class="maia-form-error-msg">{{ error }}</p>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </li>
+                  <li {% if  settings_form.password_created_message.errors %}
+                        class="maia-form-error" role="alert"
+                      {% endif %}>
+                    <label
+                      for="{{ settings_form.password_created_message.id }}">
+                      Password Generated Message</label>
+                    <p class="maia-note">
+                      Message text on the result page displaying the newly
+                      generated password.
+                    </p>
+                    <textarea
+                      name="{{ settings_form.password_created_message.id }}"
+                      tabindex="15"
+                      >{{ settings_form.password_created_message.data }}</textarea>
+                    {% if settings_form.password_created_message.errors %}
+                      <div class="maia-form-error" role="alert">
+                        {% for error in
+                        settings_form.password_created_message.errors %}
+                          <p class="maia-form-error-msg">{{ error }}</p>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </li>
+                </div>
+                <div class="maia-col-6">
+                  <li
+                    {% if  settings_form.error_message.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                    <label for="{{ settings_form.error_message.id }}">
+                      Error Message
+                   </label>
+                    <p class="maia-note">
+                      Message text included on error pages.
+                    </p>
+                    <textarea
+                      name="{{ settings_form.error_message.id }}"
+                      tabindex="16"
+                      >{{ settings_form.error_message.data }}</textarea>
+                    {% if settings_form.error_message.errors %}
+                      <div class="maia-form-error" role="alert">
+                        {% for error in settings_form.error_message.errors %}
+                          <p class="maia-form-error-msg">{{ error }}</p>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </li>
+                  <li
+                    {% if settings_form.thank_you_message.errors %}
+                      class="maia-form-error" role="alert"
+                    {% endif %}>
+                    <label
+                      for="{{ settings_form.thank_you_message.id }}">
+                      Thank You Message
+                    </label>
+                    <p class="maia-note">
+                      Message text presented on the thank you page.
+                    </p>
+                    <textarea
+                      name="{{ settings_form.thank_you_message.id }}"
+                      tabindex="17"
+                      >{{ settings_form.thank_you_message.data }}</textarea>
+                    {% if settings_form.thank_you_message.errors %}
+                      <div class="maia-form-error" role="alert">
+                        {% for error in
+                        settings_form.thank_you_message.errors %}
+                          <p class="maia-form-error-msg">{{ error }}</p>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </li>
+                </div>
+              </div>
+            </ul>
+          </fieldset>
+          <input type="hidden" name="xsrf_token" value="{{ xsrf_token }}">
+          <div><input type="hidden" name="post_type" value="settings" /></div>
+          <div id="save_all_settings" class="maia-teleport"></div>
+          <div><input type="submit" class="maia-button" value="Save"
+          tabindex="18"></div>
+        </form>
+      </div>
+    <script src="//www.google.com/js/maia.js"></script>
+{% endblock body %}
